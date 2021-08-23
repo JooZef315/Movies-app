@@ -2,7 +2,9 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { HomeScreen, RepoScreen } from "../screens";
+import { HomeScreen, MovieScreen } from "../screens";
+
+import { COLORS } from "../shared/colors";
 
 const { Screen, Navigator } = createNativeStackNavigator();
 
@@ -13,11 +15,11 @@ var Root = () => {
         initialRouteName={"Home"}
         screenOptions={{
           header: () => null,
-          contentStyle: { backgroundColor: "#FFFFFF" },
+          contentStyle: { backgroundColor: COLORS.oxfordBlue },
         }}
       >
         <Screen name={"Home"} component={HomeScreen} />
-        <Screen name={"Repo"} component={RepoScreen} />
+        <Screen name={"Movie"} component={MovieScreen} />
       </Navigator>
     </NavigationContainer>
   );

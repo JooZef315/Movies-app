@@ -1,102 +1,121 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-  View,
-  FlatList,
-  ActivityIndicator,
-  Platform,
-  StatusBar,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { ScrollView, FlatList, ActivityIndicator } from "react-native";
 
-import { Header, RepoCard } from "../../components";
+import { Title, Warning, HomeHeader, MovieCard } from "../../components";
 
-import { getRepos } from "../../services/repos";
+import { searchMovies, getMovie } from "../../services/movies";
 
-import { str, dateStr } from "../../utilities";
+import { titleLen, query } from "../../utilities";
 
 var Home = ({ navigation }) => {
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [moviesStorage, setmMoviesStorage] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [clearBtn, setClearBtn] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const [date, setDate] = useState("2021-01-01");
-  const [show, setShow] = useState(false);
-
-  const flatListRef = useRef();
-
-  const ChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(Platform.OS === "ios");
-    setDate(dateStr(currentDate));
-  };
-  console.warn(date);
-
-  let onLoadPage = () => {
-    getRepos(page, date).then((repos) => {
-      setData([...data, ...repos]);
-      setLoading(false);
-    });
-  };
-  useEffect(() => {
-    onLoadPage();
-  }, [page]);
-
-  let onLoadDate = () => {
-    getRepos(1, date).then((repos) => {
-      setData([...repos]);
-      setPage(1);
-      setLoading(false);
-    });
-    flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-  };
-  useEffect(() => {
-    onLoadDate();
-  }, [date]);
-
-  let increasePage = () => {
+  let onSearch = (movieTitle) => {
     setLoading(true);
-    let p = page + 1;
-    setPage(p);
+    searchMovies(query(movieTitle)).then((movies) => {
+      setData([...movies]);
+      setLoading(false);
+    });
   };
-  //console.warn(page);
+  useEffect(() => {
+    onSearch(searchQuery);
+  }, [searchQuery]);
 
-  var RenderItem = (repo) => {
+  let onGetMovie = (movieTitle) => {
+    setLoading(true);
+    getMovie(query(movieTitle)).then((movie) => {
+      navigation.navigate("Movie", {
+        data: movie,
+      });
+      moviesStorage.every((m) => m.imdbID !== movie.imdbID)
+        ? setmMoviesStorage([...moviesStorage, movie])
+        : setmMoviesStorage([...moviesStorage]);
+      setLoading(false);
+    });
+  };
+
+  let onToggleClearBtn = () => {
+    moviesStorage.length > 0 ? setClearBtn(true) : setClearBtn(false);
+  };
+  useEffect(() => {
+    onToggleClearBtn();
+  }, [moviesStorage]);
+
+  var RenderItem = (movie) => {
     return (
-      <RepoCard
-        key={repo.item.id + Math.floor(Math.random() * 10000)}
-        title={str(repo.item.full_name, 16)}
-        desc={str(repo.item.description, 32)}
-        owner={repo.item.owner.login}
-        img={repo.item.owner.avatar_url}
-        issues={repo.item.open_issues}
-        stars={repo.item.stargazers_count}
-        onPress={() => {
-          navigation.navigate("Repo", {
-            data: repo.item,
-          });
-        }}
+      <MovieCard
+        key={movie.item.imdbID}
+        title={titleLen(movie.item.Title, 17)}
+        year={movie.item.Year}
+        image={movie.item.Poster}
+        onPress={() => onGetMovie(movie.item.Title)}
       />
     );
   };
+
   return (
-    <View>
-      <StatusBar barStyle={"light-content"} />
-      <Header
-        txt={"All Repositories"}
-        homeScreen={true}
-        onChangeDate={ChangeDate}
-        show={show}
-        setShowDate={setShow}
+    <>
+      <HomeHeader
+        clearBtn={clearBtn}
+        onSearch={setSearchQuery}
+        onSearchBtn={() => setSearchQuery(searchQuery)}
+        onClear={() => setmMoviesStorage([])}
       />
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        renderItem={RenderItem}
-        showsVerticalScrollIndicator={false}
-        onEndReached={increasePage}
-        onEndReachedThreshold={2}
-      />
-      {loading && <ActivityIndicator style={{ marginVertical: 36 }} />}
-    </View>
+      <ScrollView>
+        {loading ? (
+          <>
+            <Title txt={"Search Results"} />
+            <ActivityIndicator
+              size={"large"}
+              color={"#FDB541"}
+              style={{ marginTop: 140 }}
+            />
+          </>
+        ) : moviesStorage.length == 0 && !searchQuery ? (
+          <>
+            <Title txt={"Recent Searches"} />
+            <Warning
+              icon={"close-circle-outline"}
+              title={"You Don't Have Search History"}
+              text={
+                "When you search for movies, you will see the history of your search"
+              }
+            />
+          </>
+        ) : moviesStorage.length > 0 && !searchQuery ? (
+          <>
+            <Title txt={"Recent Searches"} />
+            <FlatList
+              data={moviesStorage}
+              renderItem={RenderItem}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
+        ) : searchQuery && data.length == 0 ? (
+          <>
+            <Title txt={"Search Results"} />
+            <Warning
+              icon={"create-outline"}
+              title={"There Is No Result For Your Search"}
+              text={"Please make sure you entered a correct movie name"}
+            />
+          </>
+        ) : (
+          <>
+            <Title txt={"Search Results"} />
+            <FlatList
+              data={data}
+              renderItem={RenderItem}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
+        )}
+      </ScrollView>
+    </>
   );
 };
 
