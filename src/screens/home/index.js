@@ -11,6 +11,7 @@ var Home = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [moviesStorage, setmMoviesStorage] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchBtn, setSearchBtn] = useState(false);
   const [clearBtn, setClearBtn] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -23,20 +24,48 @@ var Home = ({ navigation }) => {
   };
   useEffect(() => {
     onSearch(searchQuery);
-  }, [searchQuery]);
+  }, [searchQuery, searchBtn]);
 
-  let onGetMovie = (movieTitle) => {
-    setLoading(true);
-    getMovie(query(movieTitle)).then((movie) => {
+  let onGetMovie = (movieID) => {
+    if (moviesStorage.every((m) => m.imdbID !== movieID)) {
       navigation.navigate("Movie", {
-        data: movie,
+        ID: movieID,
       });
-      moviesStorage.every((m) => m.imdbID !== movie.imdbID)
-        ? setmMoviesStorage([...moviesStorage, movie])
-        : setmMoviesStorage([...moviesStorage]);
-      setLoading(false);
-    });
+      getMovie(movieID).then((movie) => {
+        setmMoviesStorage([...moviesStorage, movie]);
+      });
+    } else {
+      StoredMovie = moviesStorage.filter((m) => m.imdbID == movieID);
+      navigation.navigate("Movie", {
+        ID: movieID,
+        Data: StoredMovie[0],
+      });
+    }
   };
+
+  // let onGetMovie = (movieID) => {
+  //   navigation.navigate("Movie", {
+  //     ID: movieID,
+  //   });
+  //   getMovie(movieID).then((movie) => {
+  //     moviesStorage.every((m) => m.imdbID !== movie.imdbID)
+  //       ? setmMoviesStorage([...moviesStorage, movie])
+  //       : setmMoviesStorage([...moviesStorage]);
+  //   });
+  // };
+
+  // let onGetMovie = (movieID) => {
+  //   setLoading(true);
+  //   getMovie(movieID).then((movie) => {
+  //     navigation.navigate("Movie", {
+  //       data: movie,
+  //     });
+  //     moviesStorage.every((m) => m.imdbID !== movie.imdbID)
+  //       ? setmMoviesStorage([...moviesStorage, movie])
+  //       : setmMoviesStorage([...moviesStorage]);
+  //     setLoading(false);
+  //   });
+  // };
 
   let onToggleClearBtn = () => {
     moviesStorage.length > 0 ? setClearBtn(true) : setClearBtn(false);
@@ -49,10 +78,10 @@ var Home = ({ navigation }) => {
     return (
       <MovieCard
         key={movie.item.imdbID}
-        title={titleLen(movie.item.Title, 17)}
+        title={titleLen(movie.item.Title, 15)}
         year={movie.item.Year}
         image={movie.item.Poster}
-        onPress={() => onGetMovie(movie.item.Title)}
+        onPress={() => onGetMovie(movie.item.imdbID)}
       />
     );
   };
@@ -62,7 +91,7 @@ var Home = ({ navigation }) => {
       <HomeHeader
         clearBtn={clearBtn}
         onSearch={setSearchQuery}
-        onSearchBtn={() => setSearchQuery(searchQuery)}
+        onSearchBtn={() => setSearchBtn(!searchBtn)}
         onClear={() => setmMoviesStorage([])}
       />
       <ScrollView>

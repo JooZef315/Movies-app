@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View, Image, Pressable, Linking } from "react-native";
+import noPhoto from "../../../assets/no-photo.png";
 
 import styles from "./styles";
 import { COLORS } from "../../shared/colors";
@@ -31,7 +32,10 @@ export var MovieHeader = ({
           <Ionicons name="arrow-back-outline" size={28} color={COLORS.sun} />
         </Pressable>
         <View style={styles.subContainer}>
-          <Image style={styles.img} source={{ uri: image }} />
+          <Image
+            style={styles.img}
+            source={image == "N/A" ? noPhoto : { uri: image }}
+          />
           <View>
             <Text style={[styles.title, { fontFamily: "Montserrat-Bold" }]}>
               {title}

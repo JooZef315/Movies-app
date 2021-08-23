@@ -11,7 +11,8 @@ export var RatingInfo = ({ ratings }) => {
     "Montserrat-Bold": require("../../shared/fonts/Montserrat-Bold.ttf"),
     "Montserrat-Regular": require("../../shared/fonts/Montserrat-Regular.ttf"),
   });
-  if (!fonts) {
+
+  if (!fonts || ratings.length == 0) {
     return null;
   } else {
     return (

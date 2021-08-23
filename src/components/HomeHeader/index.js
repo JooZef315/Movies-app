@@ -32,9 +32,7 @@ export var HomeHeader = ({ clearBtn, onSearchBtn, onSearch, onClear }) => {
           <Text style={styles.clearTxt}>{"Clear search history"}</Text>
           <Ionicons name="trash" size={22} color={COLORS.black} />
         </TouchableOpacity>
-      ) : (
-        <View></View>
-      )}
+      ) : null}
     </View>
   );
 };

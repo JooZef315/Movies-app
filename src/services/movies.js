@@ -31,7 +31,7 @@ export var getMovie = (search = "") => {
       apikey: "cf83624e",
       type: "movie",
       plot: "full",
-      t: search,
+      i: search,
     },
   })
     .then((res) => {

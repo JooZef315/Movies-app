@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, Pressable, Image } from "react-native";
-import img from "../../../assets/no-photo.png";
+import noPhoto from "../../../assets/no-photo.png";
 
 import styles from "./styles";
 
@@ -18,7 +18,10 @@ export var MovieCard = ({ title, year, image, onPress }) => {
       <>
         <Pressable style={styles.container} onPress={onPress}>
           <View style={styles.imgContainer}>
-            <Image style={styles.img} source={{ uri: image }} />
+            <Image
+              style={styles.img}
+              source={image == "N/A" ? noPhoto : { uri: image }}
+            />
           </View>
           <View style={styles.txtContainer}>
             <Text style={[styles.title, { fontFamily: "Montserrat-Bold" }]}>

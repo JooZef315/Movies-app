@@ -1,34 +1,64 @@
-import React, { useState } from "react";
-import { ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { ScrollView, ActivityIndicator } from "react-native";
 import { MovieHeader, RatingInfo, MovieInfo } from "../../components";
+
+import { getMovie } from "../../services/movies";
 
 import { titleLen } from "../../utilities";
 
 var Movie = ({ navigation, route }) => {
-  const { data } = route.params;
+  const { ID, Data } = route.params;
+  const [loading, setLoading] = useState(false);
+  const [movie, setMovie] = useState({});
+
+  let onGetMovie = () => {
+    setLoading(true);
+    if (Data) {
+      setMovie(Data);
+      setLoading(false);
+    } else {
+      getMovie(ID).then((m) => {
+        setMovie({ ...m });
+        setLoading(false);
+      });
+    }
+  };
+  useEffect(() => {
+    onGetMovie();
+  }, []);
 
   return (
     <>
-      <MovieHeader
-        title={titleLen(data.Title, 17)}
-        date={data.Released}
-        genres={data.Genre}
-        duration={data.Runtime}
-        image={data.Poster}
-        imdb={data.imdbID}
-        onBack={() => {
-          navigation.navigate("Home");
-        }}
-      />
-      <ScrollView>
-        <RatingInfo
-          key={Math.floor(Math.random() * 100)}
-          ratings={data.Ratings}
+      {loading ? (
+        <ActivityIndicator
+          size={"large"}
+          color={"#FDB541"}
+          style={{ marginTop: 280 }}
         />
-        <MovieInfo title={"Summary"} text={data.Plot} />
-        <MovieInfo title={"Director"} text={data.Director} />
-        <MovieInfo title={"Actors"} text={data.Actors} />
-      </ScrollView>
+      ) : (
+        <>
+          <MovieHeader
+            title={titleLen(movie.Title, 15)}
+            date={movie.Released}
+            genres={movie.Genre}
+            duration={movie.Runtime}
+            image={movie.Poster}
+            imdb={movie.imdbID}
+            onBack={() => {
+              navigation.navigate("Home");
+            }}
+          />
+          <ScrollView>
+            <RatingInfo
+              key={Math.floor(Math.random() * 100)}
+              ratings={movie.Ratings}
+            />
+            <MovieInfo title={"Summary"} text={movie.Plot} />
+            <MovieInfo title={"Director"} text={movie.Director} />
+            <MovieInfo title={"Actors"} text={movie.Actors} />
+          </ScrollView>
+        </>
+      )}
     </>
   );
 };
