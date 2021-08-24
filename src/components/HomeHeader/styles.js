@@ -11,10 +11,11 @@ export default StyleSheet.create({
   },
   input: {
     width: 300,
+    height: 50,
+    justifyContent: "center",
     color: COLORS.white,
     fontSize: 18,
     paddingHorizontal: 10,
-    paddingVertical: 16,
     backgroundColor: COLORS.spaceCadet,
     borderTopLeftRadius: 8,
     borderBottomLeftRadius: 8,
@@ -23,7 +24,8 @@ export default StyleSheet.create({
   },
   searchBtn: {
     backgroundColor: COLORS.cloudBurst,
-    paddingVertical: 12,
+    height: 50,
+    justifyContent: "center",
     paddingHorizontal: 16,
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
