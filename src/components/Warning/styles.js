@@ -4,7 +4,7 @@ import { COLORS } from "../../shared/colors";
 export default StyleSheet.create({
   container: {
     margin: 26,
-    marginTop: 64,
+    marginVertical: 64,
     padding: 24,
     justifyContent: "center",
     alignItems: "center",

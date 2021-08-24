@@ -31,7 +31,7 @@ export default StyleSheet.create({
   clearBtn: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     marginStart: 200,
     marginEnd: 8,
     marginBottom: 6,

@@ -4,6 +4,7 @@ import { ScrollView, FlatList, ActivityIndicator } from "react-native";
 import { Title, Warning, HomeHeader, MovieCard } from "../../components";
 
 import { searchMovies, getMovie } from "../../services/movies";
+import { storeHistory, readHistory } from "../../services/history";
 
 import { titleLen, query } from "../../utilities";
 
@@ -33,39 +34,16 @@ var Home = ({ navigation }) => {
       });
       getMovie(movieID).then((movie) => {
         setmMoviesStorage([...moviesStorage, movie]);
+        storeHistory([...moviesStorage, movie]);
       });
     } else {
-      StoredMovie = moviesStorage.filter((m) => m.imdbID == movieID);
+      let StoredMovie = moviesStorage.filter((m) => m.imdbID == movieID)[0];
       navigation.navigate("Movie", {
         ID: movieID,
-        Data: StoredMovie[0],
+        Data: StoredMovie,
       });
     }
   };
-
-  // let onGetMovie = (movieID) => {
-  //   navigation.navigate("Movie", {
-  //     ID: movieID,
-  //   });
-  //   getMovie(movieID).then((movie) => {
-  //     moviesStorage.every((m) => m.imdbID !== movie.imdbID)
-  //       ? setmMoviesStorage([...moviesStorage, movie])
-  //       : setmMoviesStorage([...moviesStorage]);
-  //   });
-  // };
-
-  // let onGetMovie = (movieID) => {
-  //   setLoading(true);
-  //   getMovie(movieID).then((movie) => {
-  //     navigation.navigate("Movie", {
-  //       data: movie,
-  //     });
-  //     moviesStorage.every((m) => m.imdbID !== movie.imdbID)
-  //       ? setmMoviesStorage([...moviesStorage, movie])
-  //       : setmMoviesStorage([...moviesStorage]);
-  //     setLoading(false);
-  //   });
-  // };
 
   let onToggleClearBtn = () => {
     moviesStorage.length > 0 ? setClearBtn(true) : setClearBtn(false);
@@ -73,6 +51,17 @@ var Home = ({ navigation }) => {
   useEffect(() => {
     onToggleClearBtn();
   }, [moviesStorage]);
+
+  useEffect(() => {
+    readHistory().then((h) => {
+      setmMoviesStorage([...h]);
+    });
+  }, []);
+
+  let onClearHistory = () => {
+    setmMoviesStorage([]);
+    storeHistory([]);
+  };
 
   var RenderItem = (movie) => {
     return (
@@ -92,7 +81,7 @@ var Home = ({ navigation }) => {
         clearBtn={clearBtn}
         onSearch={setSearchQuery}
         onSearchBtn={() => setSearchBtn(!searchBtn)}
-        onClear={() => setmMoviesStorage([])}
+        onClearHistory={onClearHistory}
       />
       <ScrollView>
         {loading ? (

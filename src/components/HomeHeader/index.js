@@ -11,7 +11,12 @@ import styles from "./styles";
 import { COLORS } from "../../shared/colors";
 import { Ionicons } from "@expo/vector-icons";
 
-export var HomeHeader = ({ clearBtn, onSearchBtn, onSearch, onClear }) => {
+export var HomeHeader = ({
+  clearBtn,
+  onSearchBtn,
+  onSearch,
+  onClearHistory,
+}) => {
   return (
     <View>
       <View style={styles.container}>
@@ -28,7 +33,7 @@ export var HomeHeader = ({ clearBtn, onSearchBtn, onSearch, onClear }) => {
         </Pressable>
       </View>
       {clearBtn ? (
-        <TouchableOpacity style={styles.clearBtn} onPress={onClear}>
+        <TouchableOpacity style={styles.clearBtn} onPress={onClearHistory}>
           <Text style={styles.clearTxt}>{"Clear search history"}</Text>
           <Ionicons name="trash" size={22} color={COLORS.black} />
         </TouchableOpacity>

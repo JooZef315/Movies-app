@@ -1,5 +1,12 @@
 import React from "react";
-import { Text, View, Image, Pressable, Linking } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  Pressable,
+  Linking,
+  TouchableOpacity,
+} from "react-native";
 import noPhoto from "../../../assets/no-photo.png";
 
 import styles from "./styles";
@@ -49,14 +56,14 @@ export var MovieHeader = ({
             <Text style={[styles.txt, { fontFamily: "Montserrat-Regular" }]}>
               {duration}
             </Text>
-            <Pressable
+            <TouchableOpacity
               style={styles.btn}
               onPress={() => Linking.openURL(imdbLink(imdb))}
             >
               <Text style={[styles.btnTxt, { fontFamily: "Montserrat-Bold" }]}>
                 {"IMDB Page"}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
