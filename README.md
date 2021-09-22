@@ -8,6 +8,7 @@ I used **axios** to call [omdb](http://www.omdbapi.com/) API, fetching the the w
  - react-navigation 
  - expo fonts  
  - ionicons
+ - async-storage
  
  ## to download the [APk](https://drive.google.com/drive/folders/1QkbD7vYDy4rF3_puDf0LKh5jGjYoS73T?usp=sharing)
 
