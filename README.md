@@ -13,4 +13,4 @@ I used **axios** to call [omdb](http://www.omdbapi.com/) API, fetching the the w
  ## to download the [APk](https://drive.google.com/drive/folders/1QkbD7vYDy4rF3_puDf0LKh5jGjYoS73T?usp=sharing)
 
 
-
+![alt text](https://github.com/JooZef315/OMDBApp/blob/main/img1.jpg?raw=true)
